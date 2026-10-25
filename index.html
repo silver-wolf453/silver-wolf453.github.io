@@ -177,7 +177,8 @@ svg{display:block}
 .view{display:none}.view.active{display:block}
 .tip{font-size:12.5px;color:var(--ink3);margin-top:6px}
 /* 自定义壁纸 */
-#bgLayer{position:fixed;inset:0;z-index:-2;background:var(--bg);background-size:cover;background-position:center;background-repeat:no-repeat}
+#bgFill{position:fixed;inset:-60px;z-index:-3;background-size:cover;background-position:center;background-repeat:no-repeat;filter:blur(40px);display:none}
+#bgLayer{position:fixed;inset:0;z-index:-2;background-color:transparent;background-size:cover;background-position:center;background-repeat:no-repeat}
 #bgShade{position:fixed;inset:0;z-index:-1;background:rgba(0,0,0,.2);pointer-events:none}
 .wp-presets{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0 6px}
 .wp-preset{height:44px;border-radius:8px;border:2px solid transparent;cursor:pointer}
@@ -278,7 +279,7 @@ function tryUnlock(){
     document.getElementById('lockMask').classList.remove('open');
     document.getElementById('lockInput').value='';
   }else{
-    document.getElementById('lockErr').textContent('密码错误，请重试');
+    document.getElementById('lockErr').textContent='密码错误，请重试';
     document.getElementById('lockInput').value='';
   }
 }
@@ -341,9 +342,13 @@ function applyTheme(t){
   else if(t.type==='preset'&&PRESETS[t.preset]){bg.style.backgroundImage=PRESETS[t.preset];}
   else{bg.style.backgroundImage='';}
   bg.style.backgroundSize=t.fit==='contain'?'contain':(t.fit==='center'?'auto':'cover');
+  var fill=document.getElementById('bgFill');
+var needFill=(t.type==='image'&&_wpUrl&&(t.fit==='contain'||t.fit==='center'));
+fill.style.backgroundImage=needFill?('url("'+_wpUrl+'")'):'';
+fill.style.display=needFill?'block':'none';
   bg.style.backgroundRepeat='no-repeat';
   bg.style.backgroundPosition='center center';
-  var ov=(t.overlay==null?20:t.overlay);
+  var ov=(t.overlay==null?20:t.overlay);      
   sh.style.background='rgba(0,0,0,'+(ov/100)+')';
   var pa=(t.panel==null?85:t.panel)/100;
   document.documentElement.style.setProperty('--pa',pa);
